@@ -1,6 +1,8 @@
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -25,13 +27,17 @@ public class Commit {
 	public String summary;
 	public String author;
 	public String date; 
-	public Commit(String value, String summary, String author, Commit parentPointer) throws NoSuchAlgorithmException, IOException
+	public Commit(String parent, String connected, String summary, String author) throws NoSuchAlgorithmException, IOException
 	{
 		date = getDate();
-		pTree = value; 
+		BufferedReader br = new BufferedReader(new FileReader("objects/index"));
+		ArrayList<String> lines = new ArrayList<String>();
+		while(br.ready()) {
+			lines.add(br.readLine());
+		}
+		//have to add pointers to previous tree in lines
 		this.summary = summary;
 		this.author = author; 
-		parent = parentPointer; 
 		commitLocation = getLocation();
 		writeFile(); 
 		updateParent();
