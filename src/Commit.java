@@ -20,52 +20,78 @@ import java.util.Formatter;
 
 
 public class Commit {
-	private Commit parent = null; 
-	private Commit connected = null; // will this always be null?
+	private Commit p; 
+	private Commit c; // will this always be null?
 	private String commitLocation;
-	private String pTree; 
-	public String summary;
-	public String author;
+	private Tree tree; 
+	public String s;
+	public String a;
 	public String date; 
-	public Commit(String parent, String connected, String summary, String author) throws NoSuchAlgorithmException, IOException
+	public String pTree;
+	public Commit(Commit parent, Commit child, String summary, String author) throws NoSuchAlgorithmException, IOException
 	{
-		date = getDate();
-		BufferedReader br = new BufferedReader(new FileReader("objects/index"));
+		p = parent;
+		c = child;
+//		date = getDate();
+		BufferedReader br = new BufferedReader(new FileReader("index"));
 		ArrayList<String> lines = new ArrayList<String>();
+		String line;
+
 		while(br.ready()) {
-			lines.add(br.readLine());
+			String temp = br.readLine();
+			line = "blob : " + temp.substring(temp.indexOf(":"), temp.length()) + " " + temp.substring(0, temp.indexOf(":"));
+			lines.add(line);
 		}
+		if(parent == null) {
+			tree = new Tree(lines);
+			tree.writePairs();
+		}
+		else {
+			p.setChild(this);
+			lines.add(0, "tree : " + "objects/" + parent.getTree());
+			tree = new Tree(lines);
+			tree.writePairs();
+		}
+		File index = new File("index");
+		index.delete();
 		//have to add pointers to previous tree in lines
-		this.summary = summary;
-		this.author = author; 
-		commitLocation = getLocation();
-		writeFile(); 
-		updateParent();
+		s = summary;
+		a = author; 
+//		commitLocation = getLocation();
+//		writeFile(); 
+//		updateParent(); 
+	}
+	public void setChild(Commit newChild) {
+		c = newChild;
 	}
 	
-	public String getDate()
-	{
-		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-		Calendar cal = Calendar.getInstance();
-		String dt = dateFormat.format(cal.getTime());
-		return dt; // should I use the member variable here?
+	public String getTree() {
+		return tree.getName();
 	}
 	
-	public void updateParent() throws NoSuchAlgorithmException, IOException
-	{
-		if (parent != null)
-		{
-			String location = "objects/" + getLocation();
-			System.out.println(location);
-			setVariable(3, location, ("objects/" + parent.getLocation())); 
-			// get parent location, edit the file to make child the location of new node
-			
-		}
-		else
-		{
-			return; 
-		}
-	}
+//	public String getDate()
+//	{
+//		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+//		Calendar cal = Calendar.getInstance();
+//		String dt = dateFormat.format(cal.getTime());
+//		return dt; // should I use the member variable here?
+//	}
+	
+//	public void updateParent() throws NoSuchAlgorithmException, IOException
+//	{
+//		if (p != null)
+//		{
+//			String location = "objects/" + getLocation();
+//			System.out.println(location);
+//			setVariable(3, location, ("objects/" + p.getLocation())); 
+//			// get parent location, edit the file to make child the location of new node
+//			
+//		}
+//		else
+//		{
+//			return; 
+//		}
+//	}
 	
 	public static void setVariable(int lineNumber, String data, String fileName) throws IOException {
 	    Path path = Paths.get(fileName);
@@ -116,50 +142,50 @@ public class Commit {
 	    return result;
 	}
 	
-	public String getContents() throws NoSuchAlgorithmException, IOException
-	{
-		String content = ""; 
-		content += pTree + "\n"; 
-		if (parent != null)
-		{
-			content += parent.getLocation() + "\n";
-		}
-		else
-		{
-			content += "\n";
-		}
-		if (connected != null)
-		{
-			content += connected.getLocation() + "\n";
-		}
-		else
-		{
-			content += "\n";
-		}
-		content += author + "\n";
-		content += getDate() + "\n";
-		content += summary; 
-//		System.out.println(content);
-		return content;
-		
-	}
+//	public String getContents() throws NoSuchAlgorithmException, IOException
+//	{
+//		String content = ""; 
+//		content += pTree + "\n"; 
+//		if (p != null)
+//		{
+//			content += p.getLocation() + "\n";
+//		}
+//		else
+//		{
+//			content += "\n";
+//		}
+//		if (c != null)
+//		{
+//			content += c.getLocation() + "\n";
+//		}
+//		else
+//		{
+//			content += "\n";
+//		}
+//		content += a + "\n";
+//		content += getDate() + "\n";
+//		content += s; 
+////		System.out.println(content);
+//		return content;
+//		
+//	}
 	
-	public String getLocation() throws NoSuchAlgorithmException, IOException
-	{
-		return SHA1(getContents()); 
-	}
-	
-	public String writeFile() throws NoSuchAlgorithmException, IOException
-	{
-		Path p = Paths.get("objects/" + SHA1(getContents()));
-//		System.out.println(p); 
-        try {
-            Files.writeString(p, getContents(), StandardCharsets.ISO_8859_1);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return p.toString(); 
-	}
+//	public String getLocation() throws NoSuchAlgorithmException, IOException
+//	{
+//		return SHA1(getContents()); 
+//	}
+//	
+//	public String writeFile() throws NoSuchAlgorithmException, IOException
+//	{
+//		Path p = Paths.get("objects/" + SHA1(getContents()));
+////		System.out.println(p); 
+//        try {
+//            Files.writeString(p, getContents(), StandardCharsets.ISO_8859_1);
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        return p.toString(); 
+//	}
 
 }

@@ -20,8 +20,10 @@ import java.security.DigestInputStream;
 
 	 
 	public class Blob {
+		String origFilePath;
 	    public Blob(String filePath) throws Exception
 	    {
+	    	origFilePath = filePath;
 	    	String fileName = sha1Code(filePath); 
 	    	System.out.println(fileName); 
 	    	BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -150,5 +152,8 @@ import java.security.DigestInputStream;
 	        {
 	            byte[] encoded = Files.readAllBytes(Paths.get(path));
 	            return new String(encoded, encoding);
+	        }
+	        public String getFileName() {
+	        	return origFilePath.substring(origFilePath.lastIndexOf('/') + 1);
 	        }
 	}

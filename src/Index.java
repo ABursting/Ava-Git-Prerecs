@@ -93,7 +93,7 @@ public void readHashContent()
     try {
 
         // create new BufferedWriter for the output file
-        bf = new BufferedWriter(new FileWriter("index.txt"));
+        bf = new BufferedWriter(new FileWriter("index"));
 
         // iterate map entries
         for (Map.Entry<String, String> entry :

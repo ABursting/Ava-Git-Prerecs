@@ -9,6 +9,7 @@ public class Tree {
 	private ArrayList<String> arr;
 	private String str;
 	private String hash;
+	private File tree;
 	
 	public static void main (String[]args) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
 		File f = new File("objects");
@@ -22,9 +23,8 @@ public class Tree {
 		stuff.add("tree: e7d79898d3342fd15daf6ec36f4cb095b52fd976");
 		
 		Tree test = new Tree(stuff);
-		test.writePAirs();
+		test.writePairs();
 	}
-	
 	public Tree(ArrayList<String> list) throws IOException, NoSuchAlgorithmException {
 		arr = list;
 		str = "";
@@ -35,7 +35,7 @@ public class Tree {
 		hash = getSHA1(str);
 	}
 	
-	public void writePAirs() throws IOException {
+	public void writePairs() throws IOException {
 		PrintWriter pw = new PrintWriter(new File("objects/" + hash));
 		for (String s : arr)
 			pw.append(s + "\n");
@@ -56,6 +56,10 @@ public class Tree {
 		}
 
 		return output; 
+	}
+	
+	public String getName() {
+		return hash;
 	}
 	
 //	private static String getSHA1(String input) throws FileNotFoundException, IOException, NoSuchAlgorithmException {

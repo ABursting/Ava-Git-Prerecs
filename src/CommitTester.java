@@ -3,16 +3,14 @@ import java.security.NoSuchAlgorithmException;
 
 public class CommitTester {
 
-	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
-		System.out.println("\n");
-		System.out.println("\n");
-		System.out.println("\n");
-		System.out.println("\n");
-		System.out.println("\n");
-		System.out.println("\n");
-		System.out.println("\n");
-		Commit test = new Commit("i love trees", "summary", "ava weinrot", null); 
-		Commit test2 = new Commit("i also love trees", "summary2", "ava weinrot", test); 
+	public static void main(String[] args) throws Exception {
+		Index test = new Index();
+		test.initialize();
+		test.add("Ava.txt");
+		Commit test1 = new Commit(null, null, "first", "asher");
+		test.add("eliza.txt");
+		test.add("testFile.txt");
+		Commit test2 = new Commit(test1, null, "first", "asher");
 	}
 
 }
