@@ -51,6 +51,7 @@ public void initialize() throws IOException
 			    theDir.mkdirs();
 			}
 			fw = new FileWriter("index", true);
+			File head = new File("head");
 	  }
 
 public void add(String fileName) throws Exception

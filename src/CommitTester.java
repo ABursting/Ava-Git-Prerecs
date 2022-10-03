@@ -10,7 +10,9 @@ public class CommitTester {
 		Commit test1 = new Commit(null, null, "first", "asher");
 		test.add("eliza.txt");
 		test.add("testFile.txt");
+		test1.delete("eliza.txt");
 		Commit test2 = new Commit(test1, null, "first", "asher");
+		test2.delete("Ava.txt");
 	}
 
 }
