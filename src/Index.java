@@ -1,5 +1,6 @@
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Index {
+private FileWriter fw; 
 private HashMap<String, String> fileInfo; 
 
 public Index()
@@ -19,7 +21,7 @@ public Index()
 	fileInfo = new HashMap<String, String>(); 
 }
 	
-public void initialize() 
+public void initialize() throws IOException 
 	{
 //		File file = new File("index");
 //		boolean fileCreated = false;
@@ -48,18 +50,25 @@ public void initialize()
 			if (!theDir.exists()){
 			    theDir.mkdirs();
 			}
+			fw = new FileWriter("index", true);
 	  }
 
 public void add(String fileName) throws Exception
 {
 	Blob newBlob = new Blob(fileName); 
 	String hash = newBlob.sha1Code(fileName);
-	System.out.println(hash);
-	String updated = "objects/" + hash; 
-	System.out.println(updated);
-	fileInfo.put(fileName, updated);
-	clearTheFile();
-	readHashContent(); 
+	try(FileWriter fw = new FileWriter("index", true);
+			BufferedWriter writer = new BufferedWriter(fw);) {
+
+			  writer.write(fileName + ":" + hash + "\n");
+			}  
+	//	System.out.println(hash);
+//	String updated = "objects/" + hash; 
+//	System.out.println(updated);
+//	fileInfo.put(fileName, updated);
+//	clearTheFile();
+//	readHashContent(); 
+//}
 }
 
 public void remove(String fileName) throws IOException

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -39,7 +40,7 @@ public class Commit {
 
 		while(br.ready()) {
 			String temp = br.readLine();
-			line = "blob : " + temp.substring(temp.indexOf(":"), temp.length()) + " " + temp.substring(0, temp.indexOf(":"));
+			line = "blob : " + temp.substring(temp.indexOf(":") + 1, temp.length()) + " " + temp.substring(0, temp.indexOf(":"));
 			lines.add(line);
 		}
 		if(parent == null) {
@@ -52,14 +53,17 @@ public class Commit {
 			tree = new Tree(lines);
 			tree.writePairs();
 		}
-		File index = new File("index");
-		index.delete();
+		
 		//have to add pointers to previous tree in lines
 		s = summary;
 		a = author; 
 //		commitLocation = getLocation();
 //		writeFile(); 
 //		updateParent(); 
+		PrintWriter writer = new PrintWriter("index");
+		writer.print("");
+	
+		writer.close();
 	}
 	public void setChild(Commit newChild) {
 		c = newChild;
