@@ -107,13 +107,15 @@ public class Commit {
 				list.add(temp);
 				end = false;
 			}
-			else if (temp.equals(deletedFile)) {
+			else if (temp.indexOf(deletedFile) > -1) {
 				found = true;
 			}
 			else if (temp.indexOf(deletedFile) == -1){
 				list.add(temp);
 			}
-
+		}
+		if(found == true) {
+			return list;
 		}
 		if(!found && end == false) {
 			String newTree = list.remove(0);

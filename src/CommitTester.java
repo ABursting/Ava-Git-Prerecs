@@ -13,7 +13,7 @@ public class CommitTester {
 		test.add("file4");
 		Commit test2 = new Commit(test1, null, "first", "asher");
 		System.out.println("prevtree: " + test2.getPrevTree());
-		test2.delete("Ava.txt");
+		test2.delete("testFile.txt");
 		test.add("file5");
 		Commit test3 = new Commit(test2, null, "first", "asher");
 	}
