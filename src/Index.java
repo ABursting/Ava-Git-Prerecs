@@ -1,6 +1,8 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,10 +61,18 @@ public void add(String fileName) throws Exception
 {
 	Blob newBlob = new Blob(fileName); 
 	String hash = newBlob.sha1Code(fileName);
+//	BufferedReader br = new BufferedReader(new FileReader("index"));
+//	ArrayList<String> temp = new ArrayList<String>();
+//	while (br.ready()) {
+//		temp.add(br.readLine());
+//	}
+//	temp.add(fileName + ":" + hash + "\n");
 	try(FileWriter fw = new FileWriter("index", true);
 			BufferedWriter writer = new BufferedWriter(fw);) {
-
-			  writer.write(fileName + ":" + hash + "\n");
+//				for(String s : temp) {
+//					writer.write(s);
+//				}
+				writer.write(fileName + ":" + hash + "\n");
 			}  
 	//	System.out.println(hash);
 //	String updated = "objects/" + hash; 

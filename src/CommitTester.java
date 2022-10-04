@@ -10,9 +10,12 @@ public class CommitTester {
 		Commit test1 = new Commit(null, null, "first", "asher");
 		test.add("eliza.txt");
 		test.add("testFile.txt");
-		test1.delete("eliza.txt");
+		test.add("file4");
 		Commit test2 = new Commit(test1, null, "first", "asher");
+		System.out.println("prevtree: " + test2.getPrevTree());
 		test2.delete("Ava.txt");
+		test.add("file5");
+		Commit test3 = new Commit(test2, null, "first", "asher");
 	}
 
 }
