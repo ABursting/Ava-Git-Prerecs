@@ -31,7 +31,7 @@ public class Commit {
 	public String s;
 	public String a;
 	public String date; 
-	public String pTree;
+	public String pTree;	
 	public Commit(Commit parent, Commit child, String summary, String author) throws NoSuchAlgorithmException, IOException
 	{
 		p = parent;
@@ -39,35 +39,39 @@ public class Commit {
 		//		date = getDate();
 		BufferedReader br = new BufferedReader(new FileReader("index"));
 		ArrayList<String> lines = new ArrayList<String>();
-		String line;
-		String temp;
-		if(parent == null) {
+		String line; String temp; boolean first = true;
+		a = author;
+		s = summary;
+		if(p == null) {
 			while(br.ready()) {
 				temp = br.readLine();
-				line = "blob : " + temp.substring(temp.indexOf(":") + 1, temp.length()) + " " + temp.substring(0, temp.indexOf(":"));
-				lines.add(line);
-
+				lines.add("blob:" + temp.substring(temp.indexOf(":") + 1) + " " + temp.substring(0, temp.indexOf(":")));
 			}
 		}
 		else {
-			p.setChild(this);
-			lines.add("tree : " + "objects/" + getPrevTree());
+			lines.add(getPrevTree());
 			while(br.ready()) {
 				temp = br.readLine();
-				if(temp.charAt(0) == '*') {
-					String deleteFile = temp.substring(8);
-					if(lines.contains(author)) {
-						lines.remove(author);
+				if(temp.charAt(1) == 'd') {
+					String fileToDelete = temp.substring(8);
+					if(lines.contains(fileToDelete)) {
+						lines.remove(fileToDelete);
 					}
 					else {
-						String tree = lines.get(0);
-						lines.remove(0);
-						lines = parseFile(tree.substring(tree.indexOf(":") + 2), deleteFile, lines);
+						lines = parseFile(fileToDelete, lines);
+					}
+				}
+				else if( temp.charAt(1) == 'e') {
+					String fileToDelete = temp.substring(8);
+					if(lines.contains(fileToDelete)) {
+						lines.remove(fileToDelete);
+					}
+					else {
+						lines = parseFile(fileToDelete, lines);
 					}
 				}
 				else {
-					line = "blob : " + temp.substring(temp.indexOf(":") + 1, temp.length()) + " " + temp.substring(0, temp.indexOf(":"));
-					lines.add(line);
+					lines.add("blob:" + temp.substring(temp.indexOf(":") + 1) + " " + temp.substring(0, temp.indexOf(":")));
 				}
 			}
 		}
@@ -78,39 +82,40 @@ public class Commit {
 		pw.print(tree.getName());
 		pw.close();
 
-		//have to add pointers to previous tree in lines
-		s = summary;
-		a = author; 
-		//		commitLocation = getLocation();
-		//		writeFile(); 
-		//		updateParent(); 
 		PrintWriter writer = new PrintWriter("index");
 		writer.print("");
-
 		writer.close();
 	}
 	public void delete(String fileName) throws IOException {
-		BufferedWriter br = new BufferedWriter(new FileWriter("index"));
-		br.append("*delete*" + fileName + "\n");
-		br.close();
-
+		BufferedReader br = new BufferedReader(new FileReader("index"));
+		ArrayList<String> temp = new ArrayList<String>();
+		while (br.ready()) {
+			temp.add(br.readLine());
+		}
+		temp.add("*delete*" + fileName);
+		PrintWriter pw = new PrintWriter("index");
+		for(String s : temp) {
+			pw.println(s);
+		}
+		pw.close();
 	}
-	public ArrayList<String> parseFile(String fileName, String deletedFile, ArrayList<String> treeList) throws IOException {
+	public ArrayList<String> parseFile(String deletedFile, ArrayList<String> treeList) throws IOException {
 		boolean found = false;
 		boolean end = true;
 		ArrayList<String> list = treeList;
-		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		String enterTree = treeList.remove(0);
+		BufferedReader br = new BufferedReader(new FileReader("objects/" + enterTree.substring(enterTree.indexOf(":") + 1)));
 		String temp;
 		while (br.ready()) {
 			temp = br.readLine();
 			if(temp.charAt(0) == 't') {
-				list.add(temp);
+				list.add(0, temp);
 				end = false;
 			}
 			else if (temp.indexOf(deletedFile) > -1) {
 				found = true;
 			}
-			else if (temp.indexOf(deletedFile) == -1){
+			else {
 				list.add(temp);
 			}
 		}
@@ -118,8 +123,7 @@ public class Commit {
 			return list;
 		}
 		if(!found && end == false) {
-			String newTree = list.remove(0);
-			return parseFile(newTree.substring(newTree.lastIndexOf(":") + 2), deletedFile, list);
+			return parseFile(deletedFile, list);
 		}
 		return list;
 	}

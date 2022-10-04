@@ -61,26 +61,17 @@ public void add(String fileName) throws Exception
 {
 	Blob newBlob = new Blob(fileName); 
 	String hash = newBlob.sha1Code(fileName);
-//	BufferedReader br = new BufferedReader(new FileReader("index"));
-//	ArrayList<String> temp = new ArrayList<String>();
-//	while (br.ready()) {
-//		temp.add(br.readLine());
-//	}
-//	temp.add(fileName + ":" + hash + "\n");
-	try(FileWriter fw = new FileWriter("index", true);
-			BufferedWriter writer = new BufferedWriter(fw);) {
-//				for(String s : temp) {
-//					writer.write(s);
-//				}
-				writer.write(fileName + ":" + hash + "\n");
-			}  
-	//	System.out.println(hash);
-//	String updated = "objects/" + hash; 
-//	System.out.println(updated);
-//	fileInfo.put(fileName, updated);
-//	clearTheFile();
-//	readHashContent(); 
-//}
+	BufferedReader br = new BufferedReader(new FileReader("index"));
+	ArrayList<String> temp = new ArrayList<String>();
+	while (br.ready()) {
+		temp.add(br.readLine());
+	}
+	temp.add(0, fileName + ":" + hash);
+	PrintWriter pw = new PrintWriter("index");
+	for(String s : temp) {
+		pw.println(s);
+	}
+	pw.close();
 }
 
 public void remove(String fileName) throws IOException

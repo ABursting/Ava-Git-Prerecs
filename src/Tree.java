@@ -10,21 +10,6 @@ public class Tree {
 	private String str;
 	private String hash;
 	private File tree;
-	
-	public static void main (String[]args) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
-		File f = new File("objects");
-		f.mkdir();
-		
-		ArrayList<String> stuff = new ArrayList<String>();
-		stuff.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f");
-		stuff.add("blob : 01d82591292494afd1602d175e165f94992f6f5f");
-		stuff.add("blob: f1d82236ab908c86ed095023b1d2e6ddf78a6d83");
-		stuff.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
-		stuff.add("tree: e7d79898d3342fd15daf6ec36f4cb095b52fd976");
-		
-		Tree test = new Tree(stuff);
-		test.writePairs();
-	}
 	public Tree(ArrayList<String> list) throws IOException, NoSuchAlgorithmException {
 		arr = list;
 		str = "";
@@ -59,7 +44,7 @@ public class Tree {
 	}
 	
 	public String getName() {
-		return hash;
+		return "tree:" + hash;
 	}
 	
 //	private static String getSHA1(String input) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
