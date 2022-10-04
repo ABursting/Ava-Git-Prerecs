@@ -15,11 +15,21 @@ public class CommitTesterJUnitTesterDoesntWorkForMe {
 		Commit c2 = new Commit(c1, null, "second", "Asher");
 		test.add("file5");
 		test.add("file3");
-		c2.delete("file4");
+		test.delete("file4");
 		Commit c3 = new Commit(c2, null, "third", "Asher");
-		c2.delete("file2");
+		test.delete("file2");
 		test.add("testFile.txt");
 		Commit c4 = new Commit(c3, null, "fourth", "Asher");
+		test.add("file1");
+		test.add("file7");
+		test.add("file8");
+		Commit c5 = new Commit(c4, null, "fifth", "Asher");
+		PrintWriter pw = new PrintWriter("file7");
+		pw.println("hello mr theiss");
+		pw.close();
+		test.edit("file7");
+		test.delete("file2");
+		Commit c6 = new Commit(c5, null, "sixth", "Asher");
 	}
 
 }

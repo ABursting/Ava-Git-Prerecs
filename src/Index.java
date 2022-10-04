@@ -16,123 +16,150 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Index {
-private FileWriter fw; 
-private HashMap<String, String> fileInfo; 
+	private FileWriter fw; 
+	private HashMap<String, String> fileInfo; 
 
-public Index()
-{
-	fileInfo = new HashMap<String, String>(); 
-}
-	
-public void initialize() throws IOException 
+	public Index()
 	{
-//		File file = new File("index");
-//		boolean fileCreated = false;
+		fileInfo = new HashMap<String, String>(); 
+	}
+
+	public void initialize() throws IOException 
+	{
+		//		File file = new File("index");
+		//		boolean fileCreated = false;
 		Path p = Paths.get("index");
-        try {
-            Files.writeString(p, "", StandardCharsets.ISO_8859_1);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-//	    	try {
-//	            fileCreated = file.createNewFile();
-//	        }
-//	        catch (IOException ioe) {
-//	            System.out.println("Error while creating empty file: " + ioe);
-//	        }
-//	 
-//	        if (fileCreated) {
-//	            System.out.println("Created empty file: " + file.getPath());
-//	        }
-//	        else {
-//	            System.out.println("Failed to create empty file: " + file.getPath());
-//	        }
-	        
-	        File theDir = new File("/path/objects");
-			if (!theDir.exists()){
-			    theDir.mkdirs();
+		try {
+			Files.writeString(p, "", StandardCharsets.ISO_8859_1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//	    	try {
+		//	            fileCreated = file.createNewFile();
+		//	        }
+		//	        catch (IOException ioe) {
+		//	            System.out.println("Error while creating empty file: " + ioe);
+		//	        }
+		//	 
+		//	        if (fileCreated) {
+		//	            System.out.println("Created empty file: " + file.getPath());
+		//	        }
+		//	        else {
+		//	            System.out.println("Failed to create empty file: " + file.getPath());
+		//	        }
+
+		File theDir = new File("/path/objects");
+		if (!theDir.exists()){
+			theDir.mkdirs();
+		}
+		fw = new FileWriter("index", true);
+		File head = new File("head");
+	}
+
+	public void add(String fileName) throws Exception
+	{
+		Blob newBlob = new Blob(fileName); 
+		String hash = newBlob.sha1Code(fileName);
+		BufferedReader br = new BufferedReader(new FileReader("index"));
+		ArrayList<String> temp = new ArrayList<String>();
+		while (br.ready()) {
+			temp.add(br.readLine());
+		}
+		temp.add(0, fileName + ":" + hash);
+		PrintWriter pw = new PrintWriter("index");
+		for(String s : temp) {
+			pw.println(s);
+		}
+		pw.close();
+	}
+
+	public void remove(String fileName) throws IOException
+	{
+		if (fileInfo.containsKey(fileName))
+		{
+			String hash = fileInfo.get(fileName);
+			fileInfo.remove(fileName, hash); 
+			clearTheFile();
+			readHashContent(); 
+		}
+		else
+		{
+			return;
+		}
+	}
+	public void delete(String fileName) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("index"));
+		ArrayList<String> temp = new ArrayList<String>();
+		while (br.ready()) {
+			temp.add(br.readLine());
+		}
+		temp.add("*delete*" + fileName);
+		PrintWriter pw = new PrintWriter("index");
+		for(String s : temp) {
+			pw.println(s);
+		}
+		pw.close();
+	}
+	public void edit(String fileName) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader("index"));
+		ArrayList<String> temp = new ArrayList<String>();
+		while (br.ready()) {
+			temp.add(br.readLine());
+		}
+		temp.add("*edited*" + fileName);
+		PrintWriter pw = new PrintWriter("index");
+		for(String s : temp) {
+			pw.println(s);
+		}
+		pw.close();
+		add(fileName);
+	}
+
+	public static void clearTheFile() throws IOException {
+		FileWriter fwOb = new FileWriter("index.txt", false); 
+		PrintWriter pwOb = new PrintWriter(fwOb, false);
+		pwOb.flush();
+		pwOb.close();
+		fwOb.close();
+	}
+
+	public void readHashContent()
+	{
+
+		BufferedWriter bf = null;
+
+		try {
+
+			// create new BufferedWriter for the output file
+			bf = new BufferedWriter(new FileWriter("index"));
+
+			// iterate map entries
+			for (Map.Entry<String, String> entry :
+				fileInfo.entrySet()) {
+
+				// put key and value separated by a colon
+				bf.write(entry.getKey() + ":"
+						+ entry.getValue());
+
+				// new line
+				bf.newLine();
 			}
-			fw = new FileWriter("index", true);
-			File head = new File("head");
-	  }
 
-public void add(String fileName) throws Exception
-{
-	Blob newBlob = new Blob(fileName); 
-	String hash = newBlob.sha1Code(fileName);
-	BufferedReader br = new BufferedReader(new FileReader("index"));
-	ArrayList<String> temp = new ArrayList<String>();
-	while (br.ready()) {
-		temp.add(br.readLine());
+			bf.flush();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+
+			try {
+
+				// always close the writer
+				bf.close();
+			}
+			catch (Exception e) {
+			}
+		}
 	}
-	temp.add(0, fileName + ":" + hash);
-	PrintWriter pw = new PrintWriter("index");
-	for(String s : temp) {
-		pw.println(s);
-	}
-	pw.close();
-}
-
-public void remove(String fileName) throws IOException
-{
-	if (fileInfo.containsKey(fileName))
-	{
-		String hash = fileInfo.get(fileName);
-		fileInfo.remove(fileName, hash); 
-		clearTheFile();
-		readHashContent(); 
-	}
-	else
-	{
-		return;
-	}
-}
-
-public static void clearTheFile() throws IOException {
-    FileWriter fwOb = new FileWriter("index.txt", false); 
-    PrintWriter pwOb = new PrintWriter(fwOb, false);
-    pwOb.flush();
-    pwOb.close();
-    fwOb.close();
-}
-
-public void readHashContent()
-{
-
-    BufferedWriter bf = null;
-
-    try {
-
-        // create new BufferedWriter for the output file
-        bf = new BufferedWriter(new FileWriter("index"));
-
-        // iterate map entries
-        for (Map.Entry<String, String> entry :
-             fileInfo.entrySet()) {
-
-            // put key and value separated by a colon
-            bf.write(entry.getKey() + ":"
-                     + entry.getValue());
-
-            // new line
-            bf.newLine();
-        }
-
-        bf.flush();
-    }
-    catch (IOException e) {
-        e.printStackTrace();
-    }
-    finally {
-
-        try {
-
-            // always close the writer
-            bf.close();
-        }
-        catch (Exception e) {
-        }
-    }
-}
 }

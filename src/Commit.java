@@ -52,21 +52,16 @@ public class Commit {
 			lines.add(getPrevTree());
 			while(br.ready()) {
 				temp = br.readLine();
-				if(temp.charAt(1) == 'd') {
+				if(temp.charAt(1) == 'd' || temp.charAt(1) == 'e') {
 					String fileToDelete = temp.substring(8);
-					if(lines.contains(fileToDelete)) {
-						lines.remove(fileToDelete);
+					boolean inLines = false;
+					for(int i = 0; i < lines.size(); i++) {
+						if(lines.get(i).indexOf(fileToDelete) > -1) {
+							inLines = true;
+							lines.remove(i);
+						}
 					}
-					else {
-						lines = parseFile(fileToDelete, lines);
-					}
-				}
-				else if( temp.charAt(1) == 'e') {
-					String fileToDelete = temp.substring(8);
-					if(lines.contains(fileToDelete)) {
-						lines.remove(fileToDelete);
-					}
-					else {
+					if(inLines == false) {
 						lines = parseFile(fileToDelete, lines);
 					}
 				}
@@ -86,19 +81,7 @@ public class Commit {
 		writer.print("");
 		writer.close();
 	}
-	public void delete(String fileName) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("index"));
-		ArrayList<String> temp = new ArrayList<String>();
-		while (br.ready()) {
-			temp.add(br.readLine());
-		}
-		temp.add("*delete*" + fileName);
-		PrintWriter pw = new PrintWriter("index");
-		for(String s : temp) {
-			pw.println(s);
-		}
-		pw.close();
-	}
+
 	public ArrayList<String> parseFile(String deletedFile, ArrayList<String> treeList) throws IOException {
 		boolean found = false;
 		boolean end = true;
@@ -124,6 +107,9 @@ public class Commit {
 		}
 		if(!found && end == false) {
 			return parseFile(deletedFile, list);
+		}
+		if(end == true) {
+			return list;
 		}
 		return list;
 	}
