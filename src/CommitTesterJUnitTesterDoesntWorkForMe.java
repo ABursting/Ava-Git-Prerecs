@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 
-public class CommitTester {
+public class CommitTesterJUnitTesterDoesntWorkForMe {
 
 	public static void main(String[] args) throws Exception {
 //		Commit c = new Commit(c, null, "", "Asher");
