@@ -9,27 +9,27 @@ public class CommitTesterJUnitTesterDoesntWorkForMe {
 		Index test = new Index();
 		test.add("Ava.txt");
 		test.add("file2");
-		Commit c1 = new Commit(null, null, "first", "Asher");
+		Commit c1 = new Commit(null, "first", "Asher");
 		test.add("file4");
 		test.add("eliza.txt");
-		Commit c2 = new Commit(c1, null, "second", "Asher");
+		Commit c2 = new Commit(c1, "second", "Asher");
 		test.add("file5");
 		test.add("file3");
 		test.delete("file4");
-		Commit c3 = new Commit(c2, null, "third", "Asher");
+		Commit c3 = new Commit(c2, "third", "Asher");
 		test.delete("file2");
 		test.add("testFile.txt");
-		Commit c4 = new Commit(c3, null, "fourth", "Asher");
+		Commit c4 = new Commit(c3, "fourth", "Asher");
 		test.add("file1");
 		test.add("file7");
 		test.add("file8");
-		Commit c5 = new Commit(c4, null, "fifth", "Asher");
+		Commit c5 = new Commit(c4, "fifth", "Asher");
 		PrintWriter pw = new PrintWriter("file7");
 		pw.println("hello mr theiss");
 		pw.close();
 		test.edit("file7");
 		test.delete("file2");
-		Commit c6 = new Commit(c5, null, "sixth", "Asher");
+		Commit c6 = new Commit(c5, "sixth", "Asher");
 	}
 
 }

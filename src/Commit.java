@@ -24,6 +24,7 @@ import java.util.Formatter;
 
 
 public class Commit {
+	private String commitFileSHA;
 	private Commit p; 
 	private Commit c; // will this always be null?
 	private String commitLocation;
@@ -32,11 +33,14 @@ public class Commit {
 	public String a;
 	public String date; 
 	public String pTree;	
-	public Commit(Commit parent, Commit child, String summary, String author) throws NoSuchAlgorithmException, IOException
+	public Commit(Commit parent, String summary, String author) throws NoSuchAlgorithmException, IOException
 	{
 		p = parent;
-		c = child;
-		//		date = getDate();
+		date = getDate();
+		if(parent != null) {
+			parent.setChild(this);
+		}
+		
 		BufferedReader br = new BufferedReader(new FileReader("index"));
 		ArrayList<String> lines = new ArrayList<String>();
 		String line; String temp; boolean first = true;
@@ -72,7 +76,19 @@ public class Commit {
 		}
 		tree = new Tree(lines);
 		tree.writePairs();
-
+		
+		String contents = s+date+a+p;
+		commitFileSHA = SHA1(contents);
+		File commitFile = new File("objects/" + commitFileSHA);
+		PrintWriter commitWriter = new PrintWriter(commitFile);
+		commitWriter.println(tree.getNameNoType());
+		commitWriter.println(p);
+		commitWriter.println(c);
+		commitWriter.println(a);
+		commitWriter.println(date);
+		commitWriter.println(s);
+		commitWriter.close();
+		
 		PrintWriter pw = new PrintWriter("head");
 		pw.print(tree.getName());
 		pw.close();
@@ -80,6 +96,9 @@ public class Commit {
 		PrintWriter writer = new PrintWriter("index");
 		writer.print("");
 		writer.close();
+	}
+	public String toString() {
+		return commitFileSHA;
 	}
 
 	public ArrayList<String> parseFile(String deletedFile, ArrayList<String> treeList) throws IOException {
@@ -122,13 +141,13 @@ public class Commit {
 		return p.tree.getName();
 	}
 
-	//	public String getDate()
-	//	{
-	//		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-	//		Calendar cal = Calendar.getInstance();
-	//		String dt = dateFormat.format(cal.getTime());
-	//		return dt; // should I use the member variable here?
-	//	}
+	public String getDate()
+	{
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		Calendar cal = Calendar.getInstance();
+		String dt = dateFormat.format(cal.getTime());
+		return dt; // should I use the member variable here?
+	}
 
 	//	public void updateParent() throws NoSuchAlgorithmException, IOException
 	//	{

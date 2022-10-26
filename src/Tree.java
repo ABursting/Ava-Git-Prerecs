@@ -46,6 +46,9 @@ public class Tree {
 	public String getName() {
 		return "tree:" + hash;
 	}
+	public String getNameNoType() {
+		return hash;
+	}
 	
 //	private static String getSHA1(String input) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
 //		 FileInputStream fileInputStream = new FileInputStream(input);
